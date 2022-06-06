@@ -24,9 +24,10 @@ import {
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 import { ref } from 'vue';
-import jawaTimur from "../../data/IDN_adm_2_kabkota_dummy.json"
+import jawaTimur from "../../data/IDN_adm_2_kabkota.json"
 
 export default {
+    props: ['disasters'],
     components: {
         LMap,
         LTileLayer,
@@ -43,7 +44,6 @@ export default {
     },
     created() {
         this.geojson = jawaTimur;
-        console.log(this.geojson)
     },
     computed: {
         iconUrl() {
@@ -63,21 +63,27 @@ export default {
                 this.iconWidth = Math.floor(this.iconHeight / 2);
             }
         },
+        syncDatabase(geo, type_id, year) {
+            return this.disasters.filter(
+                disaster => disaster.region_id === geo.properties.ID_2
+                    && disaster.type_id === type_id
+                    && disaster.year === year
+            );
+        },
         getColor(d) {
-            return d > 1000 ? '#800026' :
-                d > 500  ? '#BD0026' :
-                    d > 200  ? '#E31A1C' :
-                        d > 100  ? '#FC4E2A' :
-                            d > 50   ? '#FD8D3C' :
-                                d > 20   ? '#FEB24C' :
-                                    d > 10   ? '#FED976' :
+            return d > 35 ? '#800026' :
+                d > 30  ? '#BD0026' :
+                    d > 25  ? '#E31A1C' :
+                        d > 20  ? '#FC4E2A' :
+                            d > 15   ? '#FD8D3C' :
+                                d > 10   ? '#FEB24C' :
+                                    d > 5   ? '#FED976' :
                                         '#FFEDA0';
         },
         styleGeoJSON(feature) {
-            console.log(feature.properties.NAME_2)
-            console.log(feature.properties.density === undefined ? "#FFFFFF" : this.getColor(feature.properties.density))
+            const disaster = this.syncDatabase(feature, 1, 2021)
             return {
-                fillColor: feature.properties.density === undefined ? "#FFFFFF" : this.getColor(feature.properties.density),
+                fillColor: this.getColor(disaster[0].amount),
                 weight: 2,
                 opacity: 1,
                 color: 'white',
