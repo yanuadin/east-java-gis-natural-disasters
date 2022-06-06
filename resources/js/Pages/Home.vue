@@ -71,17 +71,14 @@ export default {
             );
         },
         getColor(d) {
-            return d > 35 ? '#800026' :
-                d > 30  ? '#BD0026' :
-                    d > 25  ? '#E31A1C' :
-                        d > 20  ? '#FC4E2A' :
-                            d > 15   ? '#FD8D3C' :
-                                d > 10   ? '#FEB24C' :
-                                    d > 5   ? '#FED976' :
-                                        '#FFEDA0';
+            return d > 25 ? '#8b0000' :
+                d > 15  ? '#ff0000' :
+                    d > 10  ? '#ffa500' :
+                        d > 5  ? '#ffff00' :
+                            '#ffde80';
         },
         styleGeoJSON(feature) {
-            const disaster = this.syncDatabase(feature, 1, 2021)
+            const disaster = this.syncDatabase(feature, 7, 2019)
             return {
                 fillColor: this.getColor(disaster[0].amount),
                 weight: 2,
