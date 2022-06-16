@@ -70,7 +70,14 @@
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             ></l-tile-layer>
             <l-control-layers />
-            <l-geo-json ref="gjs" v-for="(json, idx) in geojson.features" :key="idx" :geojson="json" :options="styleGeoJSON(json)"/>
+            <l-geo-json ref="gjs" v-for="(json, idx) in geojson.features" :key="idx" :geojson="json" :options="styleGeoJSON(json)">
+                <l-tooltip>
+                    <p><strong>{{ json.properties.NAME_2 }}</strong></p>
+                    <template v-for="(data, idx) in tooltipData(json)" :key="idx">
+                        <p><strong>{{ data.year }} : </strong>{{ data.amount }}</p>
+                    </template>
+                </l-tooltip>
+            </l-geo-json>
         </l-map>
     </div>
     <!-- End Maps -->
@@ -82,6 +89,7 @@ import {
     LTileLayer,
     LControlLayers,
     LGeoJson,
+    LTooltip
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -89,6 +97,7 @@ import { ref } from 'vue';
 import jawaTimur from "../../data/IDN_adm_2_kabkota.json"
 import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { CheckIcon, SelectorIcon } from '@heroicons/vue/solid'
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     props: ['disasters', 'types', 'selected_type', 'selected_year'],
@@ -97,6 +106,7 @@ export default {
         LTileLayer,
         LControlLayers,
         LGeoJson,
+        LTooltip,
         Listbox,
         ListboxButton,
         ListboxLabel,
@@ -133,18 +143,18 @@ export default {
                 { id: 1, value: 2019 },
                 { id: 2, value: 2020 },
                 { id: 3, value: 2021 },
-            ]
+            ],
         };
     },
     created() {
         this.geojson = jawaTimur;
     },
     methods: {
-        changeIcon() {
-            this.iconWidth += 2;
-            if (this.iconWidth > this.iconHeight) {
-                this.iconWidth = Math.floor(this.iconHeight / 2);
-            }
+        tooltipData(geo){
+            return this.disasters.filter(
+                disaster => disaster.region_id === geo.properties.ID_2
+                    && disaster.type_id === this.form.type.id
+            );
         },
         syncDatabase(geo, type_id, year) {
             return this.disasters.filter(
