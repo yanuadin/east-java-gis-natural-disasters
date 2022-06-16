@@ -34,4 +34,4 @@ use Inertia\Inertia;
 //    })->name('dashboard');
 //});
 
-Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
