@@ -65,7 +65,6 @@
             v-model="zoom"
             v-model:zoom="zoom"
             :center="[-7.250445, 112.768845]"
-            @move="log('move')"
         >
             <l-tile-layer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -140,21 +139,7 @@ export default {
     created() {
         this.geojson = jawaTimur;
     },
-    computed: {
-        iconUrl() {
-            return `https://placekitten.com/${this.iconWidth}/${this.iconHeight}`;
-        },
-        iconSize() {
-            return [this.iconWidth, this.iconHeight];
-        },
-    },
     methods: {
-        createdGJson() {
-            return '<l-geo-json ref="gjs" v-for="(json, idx) in geojson.features" :key="idx" :geojson="json" :options="styleGeoJSON(json)"/>'
-        },
-        log(a){
-            console.log(a);
-        },
         changeIcon() {
             this.iconWidth += 2;
             if (this.iconWidth > this.iconHeight) {
